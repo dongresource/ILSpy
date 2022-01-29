@@ -17,6 +17,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Linq;
+using System.Text;
+using System.Windows;
 
 namespace ICSharpCode.ILSpy.Analyzers
 {
@@ -44,6 +46,38 @@ namespace ICSharpCode.ILSpy.Analyzers
 					node.Parent.Children.Remove(node);
 				}
 			}
+		}
+	}
+
+	[ExportContextMenuEntry(Header = "Copy Results", Category = "Analyze", Order = 200)]
+	internal sealed class CopyAnalysisResultsContextMenuEntry : IContextMenuEntry
+	{
+		public bool IsVisible(TextViewContext context)
+		{
+			if (context.TreeView is AnalyzerTreeView && context.SelectedTreeNodes != null && context.SelectedTreeNodes.All(n => n is AnalyzerSearchTreeNode))
+				return true;
+			return false;
+		}
+
+		public bool IsEnabled(TextViewContext context)
+		{
+			return true;
+		}
+
+		public void Execute(TextViewContext context)
+		{
+			StringBuilder sb = new StringBuilder();
+			if (context.SelectedTreeNodes != null)
+			{
+				foreach (var node in context.SelectedTreeNodes)
+				{
+					foreach (var item in node.Children)
+					{
+						sb.AppendLine(item.Text.ToString());
+					}
+				}
+			}
+			Clipboard.SetText(sb.ToString());
 		}
 	}
 }
