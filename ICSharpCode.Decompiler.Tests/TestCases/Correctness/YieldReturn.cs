@@ -27,10 +27,12 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 		{
 			Print("SimpleYieldReturn", SimpleYieldReturn().GetEnumerator());
 			Print("SimpleYieldReturnEnumerator", SimpleYieldReturnEnumerator());
+#if !MCS1
 			Print("YieldReturnParameters",
 				new YieldReturnTest { fieldOnThis = 1 }.YieldReturnParameters(2).GetEnumerator());
 			Print("YieldReturnParametersEnumerator",
 				new YieldReturnTest { fieldOnThis = 1 }.YieldReturnParametersEnumerator(2));
+#endif
 			Print("YieldReturnInLoop", YieldReturnInLoop().GetEnumerator());
 			Print("YieldReturnWithTryFinally", YieldReturnWithTryFinally().GetEnumerator());
 			Print("YieldReturnInLock1", YieldReturnInLock1(new object()).GetEnumerator());
@@ -44,7 +46,9 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 			Print("ExceptionHandling", ExceptionHandling().GetEnumerator());
 			Print("YieldBreakInCatch", YieldBreakInCatch().GetEnumerator());
 			Print("YieldBreakInCatchInTryFinally", YieldBreakInCatchInTryFinally().GetEnumerator());
+#if !MCS1
 			Print("YieldBreakInTryCatchInTryFinally", YieldBreakInTryCatchInTryFinally().GetEnumerator());
+#endif
 			Print("YieldBreakInTryFinallyInTryFinally(false)", YieldBreakInTryFinallyInTryFinally(false).GetEnumerator());
 			Print("YieldBreakInTryFinallyInTryFinally(true)", YieldBreakInTryFinallyInTryFinally(true).GetEnumerator());
 			try
@@ -66,7 +70,9 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 			Print("TryFinallyWithTwoExitPointsInNestedCatch(true)", TryFinallyWithTwoExitPointsInNestedCatch(true).GetEnumerator());
 #endif
 			Print("GenericYield<int>()", GenericYield<int>().GetEnumerator());
+#if !MCS1
 			StructWithYieldReturn.Run();
+#endif
 		}
 
 		internal static void Print<T>(string name, IEnumerator<T> enumerator)
@@ -223,6 +229,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 			}
 		}
 
+#if !MCS1
 		public static IEnumerable<Func<string>> YieldReturnWithAnonymousMethods1(IEnumerable<string> input)
 		{
 			foreach (string line in input)
@@ -239,6 +246,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 				yield return () => copy;
 			}
 		}
+#endif
 
 		public static IEnumerable<int> GetEvenNumbers(int n)
 		{
@@ -322,6 +330,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 			}
 		}
 
+#if !MCS1
 		public static IEnumerable<int> YieldBreakInTryCatchInTryFinally()
 		{
 			try
@@ -344,6 +353,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 				Console.WriteLine("Finally");
 			}
 		}
+#endif
 
 		public static IEnumerable<int> YieldBreakInTryFinallyInTryFinally(bool b)
 		{
@@ -547,6 +557,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 		}
 	}
 
+#if !MCS1
 	struct StructWithYieldReturn
 	{
 		public static void Run()
@@ -565,4 +576,5 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Correctness
 			yield return val++;
 		}
 	}
+#endif
 }
