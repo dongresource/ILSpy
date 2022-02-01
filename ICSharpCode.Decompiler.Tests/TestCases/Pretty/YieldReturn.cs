@@ -189,6 +189,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 			}
 		}
 
+#if !MCS1
 		public static IEnumerable<Func<string>> YieldReturnWithAnonymousMethods1(IEnumerable<string> input)
 		{
 			foreach (string line in input)
@@ -205,6 +206,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 				yield return () => copy;
 			}
 		}
+#endif
 
 		public static IEnumerable<int> GetEvenNumbers(int n)
 		{
@@ -287,6 +289,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 			}
 		}
 
+#if !MCS1
 		public static IEnumerable<int> YieldBreakInTryCatchInTryFinally()
 		{
 			try
@@ -309,6 +312,7 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 				Console.WriteLine("Finally");
 			}
 		}
+#endif
 
 		public static IEnumerable<int> YieldBreakInTryFinallyInTryFinally(bool b)
 		{
