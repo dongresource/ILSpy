@@ -318,10 +318,10 @@ namespace ICSharpCode.Decompiler.Tests
 		[Test]
 		public void YieldReturn([ValueSource(nameof(defaultOptions))] CompilerOptions options)
 		{
-			if ((options & CompilerOptions.UseMcsMask) != 0)
+			/*if ((options & CompilerOptions.UseMcsMask) != 0)
 			{
 				Assert.Ignore("Decompiler bug with mono!");
-			}
+			}*/
 			RunCS(options: options);
 		}
 
