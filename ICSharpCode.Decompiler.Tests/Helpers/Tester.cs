@@ -64,7 +64,8 @@ namespace ICSharpCode.Decompiler.Tests.Helpers
 		UseRoslyn3_11_0 = 0x800,
 		UseRoslynLatest = 0x1000,
 		UseMcs5_23 = 0x2000,
-		UseMcsMask = UseMcs2_6_4 | UseMcs5_23,
+		UseMcs1_2_5 = 0x4000,
+		UseMcsMask = UseMcs1_2_5 | UseMcs2_6_4 | UseMcs5_23,
 		UseRoslynMask = UseRoslyn1_3_2 | UseRoslyn2_10_0 | UseRoslyn3_11_0 | UseRoslynLatest
 	}
 
@@ -347,6 +348,10 @@ namespace ICSharpCode.Decompiler.Tests.Helpers
 				{
 					preprocessorSymbols.Add("MCS5");
 				}
+				if (flags.HasFlag(CompilerOptions.UseMcs1_2_5))
+				{
+					preprocessorSymbols.Add("MCS1");
+				}
 			}
 			else
 			{
@@ -487,6 +492,7 @@ namespace ICSharpCode.Decompiler.Tests.Helpers
 				}
 				string mcsPath = (flags & CompilerOptions.UseMcsMask) switch {
 					CompilerOptions.UseMcs5_23 => Path.Combine(testBasePath, @"mcs\5.23\bin\mcs.bat"),
+					CompilerOptions.UseMcs1_2_5 => Path.Combine(testBasePath, @"mcs\1.2.5\bin\gmcs.bat"),
 					_ => Path.Combine(testBasePath, @"mcs\2.6.4\bin\gmcs.bat")
 				};
 				string otherOptions = " -unsafe -o" + (flags.HasFlag(CompilerOptions.Optimize) ? "+ " : "- ");
@@ -505,14 +511,19 @@ namespace ICSharpCode.Decompiler.Tests.Helpers
 					otherOptions += "-g ";
 				}
 
-				if (flags.HasFlag(CompilerOptions.Force32Bit))
+				// -platform is unsupported in MCS 1.2.5
+				if (!flags.HasFlag(CompilerOptions.UseMcs1_2_5))
 				{
-					otherOptions += "-platform:x86 ";
+					if (flags.HasFlag(CompilerOptions.Force32Bit))
+					{
+						otherOptions += "-platform:x86 ";
+					}
+					else
+					{
+						otherOptions += "-platform:anycpu ";
+					}
 				}
-				else
-				{
-					otherOptions += "-platform:anycpu ";
-				}
+
 				if (preprocessorSymbols.Count > 0)
 				{
 					otherOptions += " \"-d:" + string.Join(";", preprocessorSymbols) + "\" ";
@@ -624,6 +635,8 @@ namespace ICSharpCode.Decompiler.Tests.Helpers
 				suffix += ".roslyn3";
 			if ((cscOptions & CompilerOptions.UseRoslynLatest) != 0)
 				suffix += ".roslyn";
+			if ((cscOptions & CompilerOptions.UseMcs1_2_5) != 0)
+				suffix += ".mcs1";
 			if ((cscOptions & CompilerOptions.UseMcs2_6_4) != 0)
 				suffix += ".mcs2";
 			if ((cscOptions & CompilerOptions.UseMcs5_23) != 0)
